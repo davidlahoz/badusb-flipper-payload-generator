@@ -26,9 +26,5 @@ To run the web UI locally:
 - **Download the Payload**: Once your payload is ready, download the .flipper or .bin file to load it into your Flipper Zero device.
 - **Load the Payload**: Transfer the generated file to your Flipper Zero and use the BadUSB functionality to execute the payload.
 
-## Contributing
-If you'd like to contribute, feel free to fork the repository, open issues, or submit pull requests. Contributions are welcome.
-I am aware that is not really complex code, however I thought it would be a nice tool for Flipper-Rookies
-
 ## License
 This project is licensed under the [MIT License](LICENSE)
