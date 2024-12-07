@@ -9,7 +9,7 @@ This repository provides a web UI for generating custom BadUSB payloads for the 
 - **Web UI**: Simple and intuitive interface to design your BadUSB payloads.
 - **Custom Payloads**: Create payloads with different actions, such as typing, executing commands, or sending keystrokes.
 - **Flipper Zero Compatibility**: Payloads generated are compatible with the Flipper Zero device.
-- **No Programming Required**: Generate payloads without writing any code. _(I Know... BadUSB "coding" is not complex at all)
+- **No Programming Required**: Generate payloads without writing any code. _(I know, BadUSB "coding" is not complex at all. But I thought on making it as rookie friendly as possible)_
 
 ## Installation
 To run the web UI locally:
