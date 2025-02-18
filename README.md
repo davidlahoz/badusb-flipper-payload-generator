@@ -23,7 +23,7 @@ To run the web UI locally:
 ## Usage
 
 - **Create a Payload**: Use the form fields in the UI to customize your payload (e.g., select actions, add delays, etc.).
-- **Download the Payload**: Once your payload is ready, download the .flipper or .bin file to load it into your Flipper Zero device.
+- **Download the Payload**: Once your payload is ready, download the .txt file to load it into your Flipper Zero device.
 - **Load the Payload**: Transfer the generated file to your Flipper Zero and use the BadUSB functionality to execute the payload.
 
 ## License
