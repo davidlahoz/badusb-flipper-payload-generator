@@ -2,7 +2,7 @@
 
 ![Logo](logo.png)
 
-This repository provides a web UI for generating custom BadUSB payloads for the Flipper Zero device. With this tool, you can easily create and modify payloads that can be used with Flipper Zero's BadUSB feature. 
+A web UI for generating custom BadUSB payloads for the Flipper Zero device. With this tool, you can easily create and modify payloads that can be used with Flipper Zero's BadUSB feature. 
 
 ## Features
 
