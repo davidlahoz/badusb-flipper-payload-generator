@@ -12,7 +12,7 @@ A web UI for generating custom BadUSB payloads for the Flipper Zero device. With
 - **No Programming Required**: Generate payloads without writing any code. _(I know, BadUSB "coding" is not complex at all. But I thought on making it as rookie friendly as possible)_
 
 ## Online version
-https://badusb-flipper-payload-generator.vercel.app
+[https://badusb.davidlahoz.com](https://badusb.davidlahoz.com)
 
 ## Run locally
 To run the web UI locally:
