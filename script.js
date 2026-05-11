@@ -131,9 +131,6 @@ function insertCommand(value) {
 
 const lineCountEl = document.getElementById('line-count');
 const charCountEl = document.getElementById('char-count');
-const lcdLinesEl  = document.getElementById('lcd-lines');
-const lcdStatusEl = document.getElementById('lcd-status');
-const lcdBarEl    = document.getElementById('lcd-bar');
 const lastActEl   = document.getElementById('last-action');
 
 function onPayloadChanged(lastCmd) {
@@ -144,12 +141,6 @@ function onPayloadChanged(lastCmd) {
     if (lineCountEl) lineCountEl.textContent = lines;
     if (charCountEl) charCountEl.textContent = chars;
 
-    if (lcdLinesEl) lcdLinesEl.textContent = String(lines).padStart(4, '0');
-    if (lcdStatusEl) lcdStatusEl.textContent = lines === 0 ? 'IDLE' : 'ARMED';
-    if (lcdBarEl) {
-        const pct = Math.min(100, lines * 4);
-        lcdBarEl.style.width = pct + '%';
-    }
     if (lastCmd && lastActEl) {
         const label = String(lastCmd).split(/\s+/)[0].slice(0, 18);
         lastActEl.innerHTML = '→ ' + label;
