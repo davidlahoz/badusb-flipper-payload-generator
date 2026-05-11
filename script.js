@@ -1,21 +1,33 @@
-document.getElementById('save-btn').addEventListener('click', saveOutput);
-document.getElementById('add-remark-btn').addEventListener('click', addRemark);
-document.getElementById('add-string-btn').addEventListener('click', addString);
-document.getElementById('add-altcode-btn').addEventListener('click', addAltCode);
-document.getElementById('add-delay-btn').addEventListener('click', addDelay);
-document.getElementById('add-default-delay-btn').addEventListener('click', addDefaultDelay);
-document.getElementById('add-button-press-btn').addEventListener('click', addWaitForButtonPress);
+/* ============================================================
+   FZ.BadUSB — payload generator script
+   ============================================================ */
 
-document.getElementById('bulkStringBtn').addEventListener('click', addBulkStrings);
-document.getElementById('bulkAltcodeBtn').addEventListener('click', addBulkAltcodes);
-document.getElementById('bulkRemarkBtn').addEventListener('click', addBulkRemarks);
-document.getElementById('bulkAltcharBtn').addEventListener('click', addBulkAltchars);
+const output = document.getElementById('output');
 
-document.getElementById('saveAlternateBtn').addEventListener('click', copyToClipboard);
+const bind = (id, ev, fn) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener(ev, fn);
+};
+
+bind('save-btn', 'click', saveOutput);
+bind('add-remark-btn', 'click', addRemark);
+bind('add-string-btn', 'click', addString);
+bind('add-altcode-btn', 'click', addAltCode);
+bind('add-delay-btn', 'click', addDelay);
+bind('add-default-delay-btn', 'click', addDefaultDelay);
+bind('add-button-press-btn', 'click', addWaitForButtonPress);
+
+bind('bulkStringBtn', 'click', addBulkStrings);
+bind('bulkAltcodeBtn', 'click', addBulkAltcodes);
+bind('bulkRemarkBtn', 'click', addBulkRemarks);
+bind('bulkAltcharBtn', 'click', addBulkAltchars);
+
+bind('saveAlternateBtn', 'click', copyToClipboard);
+bind('clearBtn', 'click', clearPayload);
 
 function addCommand(command) {
-    const output = document.getElementById('output');
     output.value += `${command}\n`;
+    onPayloadChanged(command);
 }
 
 function addRemark() {
@@ -43,11 +55,17 @@ function addDelay() {
 
 function addDefaultDelay() {
     const defaultDelay = document.getElementById('default-delay-input').value.trim();
-    if (defaultDelay) addCommand(`DEFAULT_DELAY ${defaultDelay}`);
+    if (defaultDelay !== '') addCommand(`DEFAULT_DELAY ${defaultDelay}`);
 }
 
 function addWaitForButtonPress() {
     addCommand('WAIT_FOR_BUTTON_PRESS');
+}
+
+function addRepeat() {
+    const n = document.getElementById('repeat-input').value.trim();
+    if (n && Number(n) > 0) addCommand(`REPEAT ${n}`);
+    document.getElementById('repeat-input').value = '';
 }
 
 function addAltChar() {
@@ -57,104 +75,124 @@ function addAltChar() {
 }
 
 function saveOutput() {
-    const output = document.getElementById('output');
     const filename = prompt('Enter the payload name', 'payload.txt');
+    if (filename === null) return;
     const blob = new Blob([output.value], { type: 'text/plain' });
     const anchor = document.createElement('a');
     anchor.download = filename || 'payload.txt';
     anchor.href = window.URL.createObjectURL(blob);
     anchor.click();
+    flashStatus('SAVED');
 }
 
 function copyToClipboard() {
-    const output = document.getElementById('output');
     output.select();
-    output.setSelectionRange(0, 99999); // For mobile devices
+    output.setSelectionRange(0, 99999);
     document.execCommand("copy");
-    alert("Output copied to clipboard!");
+    flashStatus('COPIED');
 }
 
-function addBulkStrings() {
-    const inputArea = document.getElementById('bulkStringAltcodeInput');
-    const output = document.getElementById('output');
-    let translatedInput = '';
-
-    const lines = inputArea.value.split('\n');
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (line === '') continue;
-        translatedInput += `STRING ${line}\n`;
-    }
-
-    if (inputArea.value && inputArea.value[inputArea.value.length - 1] !== '\n') {
-        translatedInput += '\n';
-    }
-
-    output.value += translatedInput.trim() + '\n';
-    inputArea.value = '';
+function clearPayload() {
+    if (!output.value) return;
+    if (!confirm('Clear the entire payload?')) return;
+    output.value = '';
+    onPayloadChanged('CLEAR');
+    flashStatus('CLEARED');
 }
 
-function addBulkAltcodes() {
-    const inputArea = document.getElementById('bulkStringAltcodeInput');
-    const output = document.getElementById('output');
-    let translatedInput = '';
+function addBulkStrings()   { addBulkLines('bulkStringAltcodeInput', 'STRING'); }
+function addBulkAltcodes()  { addBulkLines('bulkStringAltcodeInput', 'ALTCODE'); }
+function addBulkRemarks()   { addBulkLines('bulkRemarkInput', 'REM'); }
+function addBulkAltchars()  { addBulkLines('bulkAltcharInput', 'ALTCHAR'); }
 
+function addBulkLines(inputId, prefix) {
+    const inputArea = document.getElementById(inputId);
+    if (!inputArea) return;
     const lines = inputArea.value.split('\n');
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
+    let translated = '';
+    for (const raw of lines) {
+        const line = raw.trim();
         if (line === '') continue;
-        translatedInput += `ALTCODE ${line}\n`;
+        translated += `${prefix} ${line}\n`;
     }
-
-    if (inputArea.value && inputArea.value[inputArea.value.length - 1] !== '\n') {
-        translatedInput += '\n';
+    if (translated) {
+        output.value += translated;
+        onPayloadChanged(prefix);
     }
-
-    output.value += translatedInput.trim() + '\n';
-    inputArea.value = '';
-}
-
-function addBulkRemarks() {
-    const inputArea = document.getElementById('bulkRemarkInput');
-    const output = document.getElementById('output');
-    let translatedInput = '';
-
-    const lines = inputArea.value.split('\n');
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (line === '') continue;
-        translatedInput += `REM ${line}\n`;
-    }
-
-    if (inputArea.value && inputArea.value[inputArea.value.length - 1] !== '\n') {
-        translatedInput += '\n';
-    }
-
-    output.value += translatedInput.trim() + '\n';
-    inputArea.value = '';
-}
-
-function addBulkAltchars() {
-    const inputArea = document.getElementById('bulkAltcharInput');
-    const output = document.getElementById('output');
-    let translatedInput = '';
-
-    const lines = inputArea.value.split('\n');
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (line === '') continue;
-        translatedInput += `ALTCHAR ${line}\n`;
-    }
-
-    if (inputArea.value && inputArea.value[inputArea.value.length - 1] !== '\n') {
-        translatedInput += '\n';
-    }
-
-    output.value += translatedInput.trim() + '\n';
     inputArea.value = '';
 }
 
 function insertCommand(value) {
-    const output = document.getElementById('output');
     output.value += value + '\n';
+    onPayloadChanged(value);
 }
+
+/* ===================== UI live status ===================== */
+
+const lineCountEl = document.getElementById('line-count');
+const charCountEl = document.getElementById('char-count');
+const lcdLinesEl  = document.getElementById('lcd-lines');
+const lcdStatusEl = document.getElementById('lcd-status');
+const lcdBarEl    = document.getElementById('lcd-bar');
+const lastActEl   = document.getElementById('last-action');
+
+function onPayloadChanged(lastCmd) {
+    const value = output.value;
+    const lines = value ? value.split('\n').filter(l => l.length > 0).length : 0;
+    const chars = value.length;
+
+    if (lineCountEl) lineCountEl.textContent = lines;
+    if (charCountEl) charCountEl.textContent = chars;
+
+    if (lcdLinesEl) lcdLinesEl.textContent = String(lines).padStart(4, '0');
+    if (lcdStatusEl) lcdStatusEl.textContent = lines === 0 ? 'IDLE' : 'ARMED';
+    if (lcdBarEl) {
+        const pct = Math.min(100, lines * 4);
+        lcdBarEl.style.width = pct + '%';
+    }
+    if (lastCmd && lastActEl) {
+        const label = String(lastCmd).split(/\s+/)[0].slice(0, 18);
+        lastActEl.innerHTML = '→ ' + label;
+    }
+}
+
+function flashStatus(text) {
+    if (!lastActEl) return;
+    const prev = lastActEl.innerHTML;
+    lastActEl.innerHTML = '✓ ' + text;
+    lastActEl.style.color = 'var(--phosphor)';
+    setTimeout(() => {
+        lastActEl.style.color = '';
+        lastActEl.innerHTML = prev;
+    }, 1400);
+}
+
+if (output) {
+    output.addEventListener('input', () => onPayloadChanged());
+    onPayloadChanged();
+}
+
+/* ===================== Marquee ticker ===================== */
+
+(function tickMarquee() {
+    const el = document.getElementById('marquee');
+    if (!el) return;
+    const messages = [
+        '// awaiting operator input — write payload, transfer to SD, deploy via BadUSB app //',
+        '// tip — DELAY 1000 waits one second. minimum is 100 ms //',
+        '// tip — DEFAULT_DELAY applies between every command //',
+        '// tip — STRING types text verbatim. ALTCODE for Alt+Numpad chars //',
+        '// tip — REPEAT N replays the next command N times //',
+        '// reference — developer.flipper.net › BadUSB file format //'
+    ];
+    let i = 0;
+    setInterval(() => {
+        i = (i + 1) % messages.length;
+        el.style.opacity = '0';
+        setTimeout(() => {
+            el.textContent = messages[i];
+            el.style.opacity = '';
+        }, 250);
+    }, 5500);
+    el.style.transition = 'opacity 250ms ease';
+})();
