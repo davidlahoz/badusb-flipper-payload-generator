@@ -184,7 +184,7 @@ header::before {
     max-width: 1320px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr;
     align-items: center;
     gap: 1.4rem;
     position: relative;
@@ -270,65 +270,6 @@ header::before {
 .title-group p::before {
     content: '> ';
     color: var(--accent);
-}
-
-/* mini Flipper-LCD style status panel in the header */
-.lcd {
-    width: 240px;
-    background: #c7c2a6;
-    color: #1a1612;
-    border: 1px solid var(--border-hot);
-    box-shadow:
-        inset 0 0 0 2px #0a0806,
-        inset 0 0 0 4px #c7c2a6,
-        0 0 0 4px var(--bg),
-        0 0 22px rgba(255,122,26,0.18);
-    padding: 10px 12px 12px;
-    font-family: var(--font-display);
-    font-size: 18px;
-    line-height: 1.1;
-    position: relative;
-}
-
-.lcd::after {
-    /* subtle LCD pixel grid */
-    content: '';
-    position: absolute;
-    inset: 4px;
-    background-image:
-        linear-gradient(rgba(0,0,0,0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px);
-    background-size: 3px 3px;
-    pointer-events: none;
-    mix-blend-mode: multiply;
-}
-
-.lcd .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 8px;
-    font-family: var(--font-display);
-}
-
-.lcd .row + .row { margin-top: 2px; }
-
-.lcd .label { font-size: 13px; opacity: 0.6; letter-spacing: 0.04em; }
-.lcd .val   { font-size: 18px; letter-spacing: 0.02em; }
-.lcd .val-big { font-size: 26px; }
-
-.lcd .bar {
-    height: 4px;
-    margin-top: 6px;
-    background: #1a1612;
-    position: relative;
-}
-.lcd .bar i {
-    position: absolute;
-    top: 0; left: 0; bottom: 0;
-    width: 0%;
-    background: #1a1612;
-    box-shadow: inset 0 0 0 1px #c7c2a6;
 }
 
 /* ============================ Main layout ============================ */
@@ -928,10 +869,6 @@ footer .marker {
     .header-container {
         grid-template-columns: auto 1fr;
         row-gap: 1rem;
-    }
-    .lcd {
-        grid-column: 1 / -1;
-        width: 100%;
     }
     .title-group h1 { font-size: 2rem; }
     .commands-grid { grid-template-columns: 1fr; }
